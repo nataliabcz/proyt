@@ -1,0 +1,24 @@
+Reporte de salud - Nicolás Molina (ID 11)
+Periodo: 2025-11-05 al 2025-12-04 (monthly)
+Generado: 2025-12-04T04:18:27
+
+No se registraron datos en el periodo seleccionado.
+
+Estadísticas:
+  - Total registros: 0
+  - Promedio horas de sueño: N/A
+  - Promedio estado de ánimo: N/A
+  - Promedio glucosa: N/A
+  - Promedio peso: N/A
+  - Promedio BPM: N/A
+  - Días con síntomas: 0
+  - Días con presión alta: 0
+
+Notas destacadas:
+- 2025-11-22 | Ánimo: 4 | Nota de ejemplo 2 para el usuario 11. Actividad y bienestar registrados.
+  Etiquetas: usuario_11, ejemplo, salud
+- 2025-11-23 | Ánimo: 9 | Nota de ejemplo 1 para el usuario 11. Actividad y bienestar registrados.
+  Etiquetas: usuario_11, ejemplo, salud
+
+Alertas detectadas:
+  Sin alertas en este periodo.

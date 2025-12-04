@@ -1,0 +1,34 @@
+{
+  "user": {
+    "id": 1,
+    "name": "Lucía"
+  },
+  "timeframe": "weekly",
+  "start_date": "2025-11-28",
+  "end_date": "2025-12-04",
+  "generated_at": "2025-12-04T03:17:50",
+  "stats": {
+    "total_records": 0,
+    "avg_sleep_hours": null,
+    "avg_mood": null,
+    "avg_glucose": null,
+    "avg_weight": null,
+    "avg_bpm": null,
+    "symptomatic_days": 0,
+    "high_pressure_days": 0
+  },
+  "notes_highlights": [
+    {
+      "date": "2025-12-03",
+      "text": "dsad",
+      "mood": 6,
+      "tags": [
+        "dasd",
+        "dsadsa"
+      ]
+    }
+  ],
+  "alerts": [],
+  "total_notes_considered": 1,
+  "summary": "No se registraron datos en el periodo seleccionado."
+}

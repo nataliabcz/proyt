@@ -1,0 +1,1 @@
+Profesor, para ejecutar este código, por favor vaya al archivo mysql_connection.py y en la línea 36 cambie la contraseña 'udeainfo78' por la contraseña de su base de datos local.
