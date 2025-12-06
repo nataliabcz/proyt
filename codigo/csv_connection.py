@@ -82,11 +82,11 @@ def is_valid_password(user_id, password):
         return False
 
     except FileNotFoundError:
-        print(f"❌ Error: No se encontró el archivo CSV '{CSV_FILE}'.")
+        print(f"Error: No se encontró el archivo CSV '{CSV_FILE}'.")
         return False
 
     except Exception as e:
-        print("❌ Error al validar la contraseña:", e)
+        print("Error al validar la contraseña:", e)
         return False
 
 
@@ -112,7 +112,7 @@ def register_user(user_id, password):
         users = load_passwords()
 
         if str(user_id) in users:
-            print("❌ Error: El usuario ya existe en el archivo.")
+            print("Error: El usuario ya existe en el archivo.")
             return False
 
         # Registrar al nuevo usuario
@@ -124,7 +124,7 @@ def register_user(user_id, password):
         return True
 
     except Exception as e:
-        print("❌ Error al registrar usuario:", e)
+        print("Error al registrar usuario:", e)
         return False
 
 
@@ -162,11 +162,11 @@ def remove_user(user_id):
         return True
 
     except FileNotFoundError:
-        print(f"❌ Error: No se encontró el archivo CSV '{CSV_FILE}'.")
+        print(f"Error: No se encontró el archivo CSV '{CSV_FILE}'.")
         return False
 
     except Exception as e:
-        print("❌ Error al eliminar usuario del CSV:", e)
+        print("Error al eliminar usuario del CSV:", e)
         return False
 
 
@@ -190,7 +190,7 @@ def seed_passwords():
             existing[str(i + 1)] = str("user123")
 
         if not existing:
-            print("❌ No se generaron entradas válidas para guardar.")
+            print("No se generaron entradas válidas para guardar.")
             return False
 
         # Escribir el CSV completo
@@ -205,5 +205,5 @@ def seed_passwords():
         return True
 
     except Exception as exc:
-        print("❌ Error al generar el CSV de contraseñas:", exc)
+        print("Error al generar el CSV de contraseñas:", exc)
         return False

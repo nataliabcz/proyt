@@ -1,4 +1,4 @@
-#Integrantes: Valentina Monterroza y Natalia Barrera
+#Integrantes: Valentina Monterroza y Natalia Barrera 
 
 """
 main.py
@@ -1273,17 +1273,19 @@ def _prompt_basic_user_data(existing=None):
     }
 
 
-def manage_admin_accounts(mysql_conn):
+def manage_admin_accounts(mysql_conn, mongo_db): # <--- Recibe mongo_db
     """Gestiona usuarios con rol de administrador."""
-    _manage_users_by_role(mysql_conn, "admin", "administrador", "administradores")
+    # Abajo pasamos mongo_db a la siguiente funcion
+    _manage_users_by_role(mysql_conn, mongo_db, "admin", "administrador", "administradores")
 
 
-def manage_standard_users(mysql_conn):
+def manage_standard_users(mysql_conn, mongo_db): # <--- Recibe mongo_db
     """Gestiona usuarios con rol estándar."""
-    _manage_users_by_role(mysql_conn, "user", "usuario", "usuarios")
+    # Abajo pasamos mongo_db a la siguiente funcion
+    _manage_users_by_role(mysql_conn, mongo_db, "user", "usuario", "usuarios")
 
 
-def _manage_users_by_role(mysql_conn, role_name, singular_label, plural_label):
+def _manage_users_by_role(mysql_conn, mongo_db, role_name, singular_label, plural_label):
     role_id = SQLC.get_role_id(mysql_conn, role_name)
     if role_id is None:
         print(f"No se encontró el rol '{role_name}' en la base de datos.")
@@ -1306,10 +1308,10 @@ def _manage_users_by_role(mysql_conn, role_name, singular_label, plural_label):
         elif option == 3:
             _update_user_by_role(mysql_conn, role_id, role_name, singular_label)
         elif option == 4:
-            _delete_user_by_role(mysql_conn, role_name, singular_label)
+            # AQUÍ ESTABA EL ERROR: Ahora pasamos mongo_db correctamente
+            _delete_user_by_role(mysql_conn, mongo_db, role_name, singular_label)
         elif option == 5:
             break
-
 
 def _create_user_with_role(mysql_conn, role_id, singular_label):
     print(f"\nCrear {singular_label}")
@@ -1383,7 +1385,7 @@ def _update_user_by_role(mysql_conn, role_id, role_name, singular_label):
         print("No se pudieron guardar los cambios.")
 
 
-def _delete_user_by_role(mysql_conn, role_name, singular_label):
+"""def _delete_user_by_role(mysql_conn, role_name, singular_label):
     user = _get_user_for_role(mysql_conn, role_name, singular_label)
     if not user:
         return
@@ -1401,7 +1403,36 @@ def _delete_user_by_role(mysql_conn, role_name, singular_label):
             CSVC.remove_user(user["id"])
         print(f"{singular_label.capitalize()} eliminado correctamente.")
     else:
-        print("No se pudo eliminar el registro.")
+        print("No se pudo eliminar el registro.")"""
+
+
+def _delete_user_by_role(mysql_conn, mongo_db, role_name, singular_label):
+    user = _get_user_for_role(mysql_conn, role_name, singular_label)
+    if not user:
+        return
+
+    confirm = input(
+        f"¿Estás seguro de eliminar al {singular_label} '{user['name']}' y TODOS sus datos (SQL, CSV y Mongo)? (s/n): "
+    ).strip().lower()
+    if confirm != "s":
+        print("Operación cancelada.")
+        return
+
+    # 1. Eliminar de MySQL (Usuarios y Registros Diarios)
+    deleted_sql = SQLC.delete_user(mysql_conn, user["id"])
+    
+    if deleted_sql:
+        # 2. Eliminar de CSV (Contraseñas)
+        if hasattr(CSVC, "remove_user"):
+            CSVC.remove_user(user["id"])
+            
+        # 3. Eliminar de MongoDB (Notas y Adjuntos)
+        if mongo_db is not None:
+             MONGOC.delete_user_data(mongo_db, user["id"])
+             
+        print(f"{singular_label.capitalize()} eliminado correctamente de todos los sistemas.")
+    else:
+        print("No se pudo eliminar el registro de la base de datos SQL.")
 
 
 def admin_manage_daily_records(mysql_conn):
@@ -1946,10 +1977,13 @@ def admin_menu(mysql_conn, mongo_db, user):
 
         option = get_menu_option(8)
 
+        # ... dentro de admin_menu ...
         if option == 1:
-            manage_admin_accounts(mysql_conn)
+            # CAMBIO AQUÍ: Agregamos mongo_db
+            manage_admin_accounts(mysql_conn, mongo_db) 
         elif option == 2:
-            manage_standard_users(mysql_conn)
+            # CAMBIO AQUÍ: Agregamos mongo_db
+            manage_standard_users(mysql_conn, mongo_db)
         elif option == 3:
             admin_manage_daily_records(mysql_conn)
         elif option == 4:

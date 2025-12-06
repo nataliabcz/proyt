@@ -119,10 +119,10 @@ def create_tables(connection):
         """)
 
         connection.commit()
-        print("✔ Tablas creadas correctamente")
+        print("Tablas creadas correctamente")
 
     except Error as e:
-        print("❌ Error al crear las tablas:", e)
+        print("Error al crear las tablas:", e)
 
 
 def insert_sample_data(connection):
@@ -268,10 +268,10 @@ def insert_sample_data(connection):
                       food, symptoms, blood_pressure, glucose, bpm, weight))
 
         connection.commit()
-        print("✔ Datos de ejemplo insertados correctamente")
+        print("Datos de ejemplo insertados correctamente")
 
     except Error as e:
-        print("❌ Error al insertar datos:", e)
+        print("Error al insertar datos:", e)
 
 
 def has_permission(connection, user_id, permit_name):
@@ -304,7 +304,7 @@ def has_permission(connection, user_id, permit_name):
         return result > 0
 
     except Error as e:
-        print("❌ Error al comprobar permisos:", e)
+        print("Error al comprobar permisos:", e)
         return False
 
 
@@ -335,7 +335,7 @@ def register_user(connection, name, age, email, role_id):
         return cursor.lastrowid
 
     except Error as e:
-        print("❌ Error al registrar usuario:", e)
+        print("Error al registrar usuario:", e)
         return None
 
 
@@ -365,7 +365,7 @@ def obtain_user_from_email(connection, email):
         return result
 
     except Error as e:
-        print("❌ Error al buscar usuario:", e)
+        print("Error al buscar usuario:", e)
         return False
 
 
@@ -407,7 +407,7 @@ def register_daily_record(connection, user_id, date, sleep_hours, mood,
         return True
 
     except Error as e:
-        print("❌ Error al registrar el registro diario:", e)
+        print("Error al registrar el registro diario:", e)
         return False
 
 
@@ -421,7 +421,7 @@ def get_role_id(connection, role_name):
         result = cursor.fetchone()
         return result[0] if result else None
     except Error as e:
-        print("❌ Error al obtener el rol:", e)
+        print("Error al obtener el rol:", e)
         return None
 
 
@@ -447,7 +447,7 @@ def get_users(connection, role_name=None):
         cursor.execute(query, tuple(params))
         return cursor.fetchall()
     except Error as e:
-        print("❌ Error al obtener usuarios:", e)
+        print("Error al obtener usuarios:", e)
         return []
 
 
@@ -466,7 +466,7 @@ def get_user_by_id(connection, user_id):
         """, (user_id,))
         return cursor.fetchone()
     except Error as e:
-        print("❌ Error al obtener usuario:", e)
+        print("Error al obtener usuario:", e)
         return None
 
 
@@ -484,24 +484,35 @@ def update_user(connection, user_id, name, age, email, role_id):
         connection.commit()
         return cursor.rowcount > 0
     except Error as e:
-        print("❌ Error al actualizar usuario:", e)
+        print("Error al actualizar usuario:", e)
         return False
 
 
 def delete_user(connection, user_id):
     """
-    Elimina un usuario por ID.
+    Elimina un usuario y sus registros diarios de salud.
     """
+    cursor = connection.cursor()
     try:
-        cursor = connection.cursor()
-        cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
+        # 1. Primero borramos los registros médicos de ese usuario (Tabla hija)
+        sql_records = "DELETE FROM daily_records WHERE user_id = %s"
+        cursor.execute(sql_records, (user_id,))
+        
+        # 2. NO TOCAMOS role_permits (ahí no hay user_id, eso causaba tu error anterior)
+        
+        # 3. Finalmente, borramos al usuario
+        sql_user = "DELETE FROM users WHERE id = %s"
+        cursor.execute(sql_user, (user_id,))
+        
         connection.commit()
-        return cursor.rowcount > 0
-    except Error as e:
-        print("❌ Error al eliminar usuario:", e)
+        return True
+    except mysql.connector.Error as err:
+        print(f"Error al eliminar usuario completo: {err}")
+        connection.rollback()
         return False
-
-
+    finally:
+        cursor.close()
+        
 def get_daily_records_admin(connection, user_id=None, limit=50):
     """
     Obtiene registros diarios con información del usuario.
@@ -524,7 +535,7 @@ def get_daily_records_admin(connection, user_id=None, limit=50):
         cursor.execute(query, tuple(params))
         return cursor.fetchall()
     except Error as e:
-        print("❌ Error al obtener registros diarios:", e)
+        print("Error al obtener registros diarios:", e)
         return []
 
 
@@ -542,7 +553,7 @@ def get_daily_record_by_id(connection, record_id):
         """, (record_id,))
         return cursor.fetchone()
     except Error as e:
-        print("❌ Error al obtener el registro diario:", e)
+        print("Error al obtener el registro diario:", e)
         return None
 
 
@@ -571,7 +582,7 @@ def update_daily_record(connection, record_id, updates):
         connection.commit()
         return cursor.rowcount > 0
     except Error as e:
-        print("❌ Error al actualizar el registro diario:", e)
+        print("Error al actualizar el registro diario:", e)
         return False
 
 
@@ -585,7 +596,7 @@ def delete_daily_record(connection, record_id):
         connection.commit()
         return cursor.rowcount > 0
     except Error as e:
-        print("❌ Error al eliminar el registro diario:", e)
+        print("Error al eliminar el registro diario:", e)
         return False
 
 
@@ -605,7 +616,7 @@ def has_existing_data(connection):
 
         return (users_count + records_count) > 0
     except Error as e:
-        print("❌ Error al verificar datos existentes:", e)
+        print("Error al verificar datos existentes:", e)
         return False
 
 
@@ -618,7 +629,7 @@ def get_all_user_ids(connection):
         cursor.execute("SELECT id FROM users ORDER BY id")
         return [row[0] for row in cursor.fetchall()]
     except Error as e:
-        print("❌ Error al obtener los usuarios:", e)
+        print("Error al obtener los usuarios:", e)
         return []
 
 
@@ -652,7 +663,7 @@ def get_daily_records_for_analysis(connection, user_id, limit=30):
         records = cursor.fetchall()
         return list(reversed(records))
     except Error as e:
-        print("❌ Error al obtener registros para análisis:", e)
+        print("Error al obtener registros para análisis:", e)
         return []
 
 
@@ -692,7 +703,7 @@ def get_daily_records_in_range(connection, user_id, start_date, end_date):
         """, (user_id, start_date, end_date))
         return cursor.fetchall()
     except Error as e:
-        print("❌ Error al obtener registros del rango solicitado:", e)
+        print("Error al obtener registros del rango solicitado:", e)
         return []
 
 
@@ -758,7 +769,7 @@ def search_daily_records(connection, user_id, date_from=None, date_to=None,
         cursor.execute(query, tuple(params))
         return cursor.fetchall()
     except Error as e:
-        print("❌ Error al buscar registros diarios:", e)
+        print("Error al buscar registros diarios:", e)
         return []
 
 
@@ -814,5 +825,5 @@ def get_daily_records(connection, user_id, start_date=None, end_date=None, limit
         return cursor.fetchall()
 
     except Error as e:
-        print("❌ Error al obtener registros diarios:", e)
+        print("Error al obtener registros diarios:", e)
         return []

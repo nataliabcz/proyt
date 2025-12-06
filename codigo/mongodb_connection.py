@@ -348,3 +348,19 @@ def insert_sample_data(db):
     attachments.insert_many(attachments_data)
 
     print("✔ Datos de ejemplo insertados correctamente en MongoDB")
+
+#NUEVOOOOOOOOOOOOOOOOOOOO
+
+def delete_user_data(db, user_id):
+    """
+    Elimina todas las notas y adjuntos asociados a un usuario en MongoDB.
+    """
+    try:
+        # Borrar notas personales
+        db["personal_notes"].delete_many({"user_id": user_id})
+        # Borrar adjuntos
+        db["attachments"].delete_many({"user_id": user_id})
+        return True
+    except Exception as e:
+        print("Error al eliminar datos en MongoDB:", e)
+        return False
