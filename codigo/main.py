@@ -1,4 +1,6 @@
 #Integrantes: Valentina Monterroza y Natalia Barrera 
+#Link a el repositorio: https://github.com/nataliabcz/proyt.git
+
 
 """
 main.py
