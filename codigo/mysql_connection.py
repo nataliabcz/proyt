@@ -29,7 +29,7 @@ def create_connection():
         connection = mysql.connector.connect(
             host="localhost",
             port="3306",
-            user=" informatica1",
+            user="informatica1",
             password="info2025_2",
             database="FP_Info12025_2"
         )
