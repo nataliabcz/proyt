@@ -1,0 +1,23 @@
+Reporte de salud - Felipe Ríos (ID 6)
+Periodo: 2025-11-07 al 2025-12-06 (monthly)
+Generado: 2025-12-06T20:43:38
+
+Se registraron 3 eventos. Promedio de estado de ánimo: 6.00. Alertas detectadas: 0.
+
+Estadísticas:
+  - Total registros: 3
+  - Promedio horas de sueño: 8.50
+  - Promedio estado de ánimo: 6.00
+  - Promedio glucosa: 102.00
+  - Promedio peso: 63.30
+  - Promedio BPM: 69.00
+  - Días con síntomas: 3
+  - Días con presión alta: 0
+  - Mejor estado de ánimo: 7 (fecha 2025-11-30)
+  - Peor estado de ánimo: 5 (fecha 2025-11-28)
+
+Notas destacadas:
+  No hay notas para este periodo.
+
+Alertas detectadas:
+  Sin alertas en este periodo.

@@ -1,1 +1,11 @@
-Profesor, para ejecutar este código, por favor vaya al archivo mysql_connection.py y en la línea 36 cambie la contraseña 'udeainfo78' por la contraseña de su base de datos local.
+# Guía rápida
+
+1. Instala las dependencias desde la raíz del proyecto:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. Ejecuta la aplicación (en la misma ruta raíz):
+   ```bash
+   python codigo/main.py
+   ```
