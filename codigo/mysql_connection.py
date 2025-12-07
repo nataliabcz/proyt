@@ -29,8 +29,8 @@ def create_connection():
         connection = mysql.connector.connect(
             host="localhost",
             port="3306",
-            user="root",
-            password="udeainfo78",
+            user=" informatica1",
+            password="info2025_2",
             database="FP_Info12025_2"
         )
         return connection
@@ -512,7 +512,7 @@ def delete_user(connection, user_id):
         return False
     finally:
         cursor.close()
-        
+
 def get_daily_records_admin(connection, user_id=None, limit=50):
     """
     Obtiene registros diarios con información del usuario.
